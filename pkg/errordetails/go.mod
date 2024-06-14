@@ -1,4 +1,4 @@
-module github.com/gcarrenho/errordetails/pkg/error
+module github.com/gcarrenho/errordetails/pkg/errordetails
 
 go 1.22.0
 
