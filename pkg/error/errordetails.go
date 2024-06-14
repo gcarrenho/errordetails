@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"runtime"
 	"strings"
+
+	"github.com/rs/zerolog"
 )
 
 type ErrorDetails struct {
@@ -63,4 +65,19 @@ func (e *ErrorDetails) Int(key string, val int) *ErrorDetails {
 func (e *ErrorDetails) Msg(message string) *ErrorDetails {
 	e.Message = message
 	return e
+}
+
+// Implement the MarshalZerologObject method to support zerolog
+func (e *ErrorDetails) MarshalZerologObject(event *zerolog.Event) {
+	event.Str("message", e.Message)
+	event.Str("file", e.file)
+	event.Int("line", e.line)
+
+	for _, f := range e.fields {
+		event.Str(f.key, f.val)
+	}
+
+	if e.err != nil {
+		event.Str("error", e.err.Error())
+	}
 }
