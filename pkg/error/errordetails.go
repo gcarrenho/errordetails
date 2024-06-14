@@ -7,17 +7,19 @@ import (
 )
 
 type ErrorDetails struct {
-	ErrorForClient //ErrorForClient `json:"error"`
-	err            error
-	fields         []field
-	file           string
-	line           int
-}
-
-type ErrorForClient struct {
+	//ErrorForClient //ErrorForClient `json:"error"`
 	Code    int    `json:"code"`
 	Message string `json:"message,omitempty"`
+	err     error
+	fields  []field
+	file    string
+	line    int
 }
+
+/*type ErrorForClient struct {
+	Code    int    `json:"code"`
+	Message string `json:"message,omitempty"`
+}*/
 
 type field struct {
 	key string
@@ -37,7 +39,7 @@ func NewErrorDetails(err error) *ErrorDetails {
 func (e *ErrorDetails) Error() string {
 	var builder strings.Builder
 	//builder.WriteString(e.Message)
-	builder.WriteString(fmt.Sprintf("%s:%d: %s", e.file, e.line, e.ErrorForClient.Message))
+	builder.WriteString(fmt.Sprintf("%s:%d: %s", e.file, e.line, e.Message))
 
 	for _, f := range e.fields {
 		builder.WriteString(fmt.Sprintf(" | %s: %s", f.key, f.val))
@@ -65,7 +67,7 @@ func (e *ErrorDetails) Int(key string, val int) *ErrorDetails {
 }
 
 func (e *ErrorDetails) Msg(message string) *ErrorDetails {
-	e.ErrorForClient.Message = message
+	e.Message = message
 	return e
 }
 
