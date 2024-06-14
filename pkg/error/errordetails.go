@@ -2,6 +2,7 @@ package errordetails
 
 import (
 	"fmt"
+	"runtime"
 	"strings"
 )
 
@@ -10,6 +11,8 @@ type ErrorDetails struct {
 	Message string `json:"message,omitempty"`
 	err     error
 	fields  []field
+	file    string
+	line    int
 }
 
 type field struct {
@@ -18,14 +21,19 @@ type field struct {
 }
 
 func NewErrorDetails(err error) *ErrorDetails {
+	// Captura la información del archivo y línea
+	_, file, line, _ := runtime.Caller(1)
 	return &ErrorDetails{
-		err: err,
+		err:  err,
+		file: file,
+		line: line,
 	}
 }
 
 func (e *ErrorDetails) Error() string {
 	var builder strings.Builder
-	builder.WriteString(e.Message)
+	//builder.WriteString(e.Message)
+	builder.WriteString(fmt.Sprintf("%s:%d: %s", e.file, e.line, e.Message))
 
 	for _, f := range e.fields {
 		builder.WriteString(fmt.Sprintf(" | %s: %s", f.key, f.val))
