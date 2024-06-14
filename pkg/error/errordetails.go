@@ -6,9 +6,10 @@ import (
 )
 
 type ErrorDetails struct {
-	err    error
-	title  string
-	fields []field
+	Code    int    `json:"code"`
+	Message string `json:"message,omitempty"`
+	err     error
+	fields  []field
 }
 
 type field struct {
@@ -16,16 +17,15 @@ type field struct {
 	val string
 }
 
-func NewErrorDetails(err error, title string) *ErrorDetails {
+func NewErrorDetails(err error) *ErrorDetails {
 	return &ErrorDetails{
-		err:   err,
-		title: title,
+		err: err,
 	}
 }
 
 func (e *ErrorDetails) Error() string {
 	var builder strings.Builder
-	builder.WriteString(e.title)
+	builder.WriteString(e.Message)
 
 	for _, f := range e.fields {
 		builder.WriteString(fmt.Sprintf(" | %s: %s", f.key, f.val))
@@ -49,5 +49,10 @@ func (e *ErrorDetails) Str(key, val string) *ErrorDetails {
 
 func (e *ErrorDetails) Int(key string, val int) *ErrorDetails {
 	e.fields = append(e.fields, field{key: key, val: fmt.Sprintf("%d", val)})
+	return e
+}
+
+func (e *ErrorDetails) Msg(message string) *ErrorDetails {
+	e.Message = message
 	return e
 }

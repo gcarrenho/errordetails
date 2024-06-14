@@ -7,20 +7,20 @@ import (
 
 func TestNewErrorDetails(t *testing.T) {
 	baseErr := errors.New("an error occurred")
-	customErr := NewErrorDetails(baseErr, "title example")
+	customErr := NewErrorDetails(baseErr)
 
 	if customErr.err != baseErr {
 		t.Errorf("expected %v, got %v", baseErr, customErr.err)
 	}
 
-	if customErr.title == "" {
+	/*if customErr.Message == "" {
 		t.Errorf("expected title to be initialized, got empty")
-	}
+	}*/
 }
 
 func TestErrorDetails_Str(t *testing.T) {
 	baseErr := errors.New("an error occurred")
-	errorDetails := NewErrorDetails(baseErr, "message error example")
+	errorDetails := NewErrorDetails(baseErr)
 
 	// Add fields using Str method
 	errorDetails.Str("OrderItemID", "123").
@@ -47,7 +47,7 @@ func TestErrorDetails_Str(t *testing.T) {
 
 func TestErrorDetails_Int(t *testing.T) {
 	baseErr := errors.New("an error occurred")
-	errorDetails := NewErrorDetails(baseErr, "message error example")
+	errorDetails := NewErrorDetails(baseErr)
 
 	// Add integer fields using Int method
 	errorDetails.Int("OrderItemID", 123).
@@ -72,10 +72,10 @@ func TestErrorDetails_Int(t *testing.T) {
 
 func TestErrorDetails_Error(t *testing.T) {
 	baseErr := errors.New("an error occurred")
-	customErr := NewErrorDetails(baseErr, "message error example").
+	customErr := NewErrorDetails(baseErr).
 		Str("OrderItemID", "123").
 		Str("PresetID", "preset123").
-		Str("SettingsJSON", `{"key":"value"}`)
+		Str("SettingsJSON", `{"key":"value"}`).Msg("message error example")
 
 	expectedMessage := "message error example | OrderItemID: 123 | PresetID: preset123 | SettingsJSON: {\"key\":\"value\"} --> an error occurred"
 
