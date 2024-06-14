@@ -2,7 +2,10 @@ package errordetails
 
 import (
 	"errors"
+	"fmt"
 	"testing"
+
+	"github.com/huandu/go-assert"
 )
 
 func TestNewErrorDetails(t *testing.T) {
@@ -70,7 +73,7 @@ func TestErrorDetails_Int(t *testing.T) {
 	}
 }
 
-func TestErrorDetails_Error(t *testing.T) {
+/*func TestErrorDetails_Error(t *testing.T) {
 	baseErr := errors.New("an error occurred")
 	customErr := NewErrorDetails(baseErr).
 		Str("OrderItemID", "123").
@@ -81,5 +84,59 @@ func TestErrorDetails_Error(t *testing.T) {
 
 	if customErr.Error() != expectedMessage {
 		t.Errorf("expected %s, got %s", expectedMessage, customErr.Error())
+	}
+}*/
+
+func TestErrorDetails_Error(t *testing.T) {
+	baseErr := errors.New("base error")
+	file := "file.go"
+	line := 42
+
+	tests := []struct {
+		name           string
+		errorDetails   *ErrorDetails
+		expectedOutput string
+	}{
+		{
+			name: "Base Error",
+			errorDetails: &ErrorDetails{
+				Message: "An error occurred",
+				fields:  nil,
+				err:     baseErr,
+				file:    file,
+				line:    line,
+			},
+			expectedOutput: fmt.Sprintf("%s:%d: An error occurred --> %s", file, line, baseErr.Error()),
+		},
+		{
+			name: "With Fields",
+			errorDetails: &ErrorDetails{
+				Message: "An error occurred",
+				fields: []field{
+					{key: "OrderNumber", val: "12345"},
+				},
+				err:  baseErr,
+				file: file,
+				line: line,
+			},
+			expectedOutput: fmt.Sprintf("%s:%d: An error occurred | OrderNumber: 12345 --> %s", file, line, baseErr.Error()),
+		},
+		{
+			name: "Without Base Error",
+			errorDetails: &ErrorDetails{
+				Message: "An error occurred",
+				fields:  nil,
+				err:     nil,
+				file:    file,
+				line:    line,
+			},
+			expectedOutput: fmt.Sprintf("%s:%d: An error occurred", file, line),
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			assert.Equal(t, tt.expectedOutput, tt.errorDetails.Error())
+		})
 	}
 }
