@@ -9,12 +9,16 @@ import (
 )
 
 type ErrorDetails struct {
+	ErrorForClient ErrorForClient `json:"error"`
+	err            error
+	fields         []field
+	file           string
+	line           int
+}
+
+type ErrorForClient struct {
 	Code    int    `json:"code"`
 	Message string `json:"message,omitempty"`
-	err     error
-	fields  []field
-	file    string
-	line    int
 }
 
 type field struct {
@@ -35,7 +39,7 @@ func NewErrorDetails(err error) *ErrorDetails {
 func (e *ErrorDetails) Error() string {
 	var builder strings.Builder
 	//builder.WriteString(e.Message)
-	builder.WriteString(fmt.Sprintf("%s:%d: %s", e.file, e.line, e.Message))
+	builder.WriteString(fmt.Sprintf("%s:%d: %s", e.file, e.line, e.ErrorForClient.Message))
 
 	for _, f := range e.fields {
 		builder.WriteString(fmt.Sprintf(" | %s: %s", f.key, f.val))
@@ -63,13 +67,13 @@ func (e *ErrorDetails) Int(key string, val int) *ErrorDetails {
 }
 
 func (e *ErrorDetails) Msg(message string) *ErrorDetails {
-	e.Message = message
+	e.ErrorForClient.Message = message
 	return e
 }
 
 // Implement the MarshalZerologObject method to support zerolog
 func (e *ErrorDetails) MarshalZerologObject(event *zerolog.Event) {
-	event.Str("message", e.Message)
+	event.Str("message", e.ErrorForClient.Message)
 	event.Str("file", e.file)
 	event.Int("line", e.line)
 
