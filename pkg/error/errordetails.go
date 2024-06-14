@@ -4,12 +4,10 @@ import (
 	"fmt"
 	"runtime"
 	"strings"
-
-	"github.com/rs/zerolog"
 )
 
 type ErrorDetails struct {
-	ErrorForClient ErrorForClient `json:"error"`
+	ErrorForClient //ErrorForClient `json:"error"`
 	err            error
 	fields         []field
 	file           string
@@ -72,7 +70,7 @@ func (e *ErrorDetails) Msg(message string) *ErrorDetails {
 }
 
 // Implement the MarshalZerologObject method to support zerolog
-func (e *ErrorDetails) MarshalZerologObject(event *zerolog.Event) {
+/*func (e *ErrorDetails) MarshalZerologObject(event *zerolog.Event) {
 	event.Str("message", e.ErrorForClient.Message)
 	event.Str("file", e.file)
 	event.Int("line", e.line)
@@ -84,4 +82,4 @@ func (e *ErrorDetails) MarshalZerologObject(event *zerolog.Event) {
 	if e.err != nil {
 		event.Str("error", e.err.Error())
 	}
-}
+}*/
