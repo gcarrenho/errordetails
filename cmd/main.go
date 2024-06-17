@@ -1,10 +1,8 @@
 package main
 
 import (
-	"errordetails/pkg/errordetails"
+	"errordetails"
 	"errors"
-	//"fmt"
-	//"github.com/gcarrenho/errordetails/pkg/errordetails"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 	//"os"
