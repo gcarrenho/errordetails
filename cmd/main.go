@@ -1,14 +1,13 @@
 package main
 
 import (
+	"errordetails/pkg/errordetails"
 	"errors"
-
-	"github.com/gcarrenho/errordetails/pkg/errordetails"
+	//"fmt"
+	//"github.com/gcarrenho/errordetails/pkg/errordetails"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
-	//"github.com/rs/zerolog/pkgerrors"
 	//"os"
-	//"strings"
 	"time"
 )
 
@@ -55,4 +54,13 @@ func main() {
 	// Log detailed error information
 	log.Error().Object("error_details", errorcust).Msg("An error occurred")
 
+	/*errorcust2 := errordetails.NewErrorDetails(errors.New("error test")).Str("nuevo", "tema")
+	fmt.Println(errorcust2)
+	//log.Error().Object("error_details", errorcust2).Msg("An error occurred")
+	log := zerolog.New(os.Stdout).With().
+		Str("foo", "bar").
+		Object("user", errorcust2).
+		Logger()
+
+	log.Log().Msg("hello world")*/
 }
