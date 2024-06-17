@@ -1,7 +1,7 @@
 package main
 
 import (
-	"errordetails"
+	"errordetails/pkg"
 	"errors"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
